@@ -1,22 +1,24 @@
-require 'rubygems'
+require "rubygems"
 
-# use local merb-core if running from a typical dev checkout.
-lib = File.join('..', '..', 'merb-core', 'lib')
+# Use current merb-core sources if running from a typical dev checkout.
+lib = File.expand_path('../../../../merb/merb-core/lib', __FILE__)
 $LOAD_PATH.unshift(lib) if File.directory?(lib)
-
 require 'merb-core'
 require 'merb-core/test'
 require 'merb-core/dispatch/session'
 
-# use local merb-auth-core if running from a typical dev checkout.
-lib = File.join('..', 'merb-auth-core', 'lib')
+# Use current merb-auth-core sources if running from a typical dev checkout.
+lib = File.expand_path('../../../merb-auth-core/lib', __FILE__)
 $LOAD_PATH.unshift(lib) if File.directory?(lib)
-
 require 'merb-auth-core'
 
-# Support running specs with 'rake spec' and 'spec'
-$LOAD_PATH.unshift('lib')  unless $LOAD_PATH.include?('lib')
-$LOAD_PATH.unshift('spec') unless $LOAD_PATH.include?('spec')
+# Use current merb_sequel sources if running from a typical dev checkout.
+lib = File.expand_path('../../../../merb_sequel/lib', __FILE__)
+$LOAD_PATH.unshift(lib) if File.directory?(lib)
+require 'merb_sequel'
+
+# The lib under test
+require "merb-auth-more"
 
 # Satisfies Autotest and anyone else not using the Rake tasks
 require 'spec'

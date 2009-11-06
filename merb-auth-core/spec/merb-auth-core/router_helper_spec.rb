@@ -1,5 +1,4 @@
-require File.join(File.dirname(__FILE__), "..", 'spec_helper.rb')
-require 'ruby-debug'
+require 'spec_helper'
 
 describe "router protection" do
 

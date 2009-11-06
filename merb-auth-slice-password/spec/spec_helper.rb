@@ -1,8 +1,29 @@
-require 'rubygems'
+require "rubygems"
+
+# Use current merb-core sources if running from a typical dev checkout.
+lib = File.expand_path('../../../../merb/merb-core/lib', __FILE__)
+$LOAD_PATH.unshift(lib) if File.directory?(lib)
 require 'merb-core'
+
+# Use current merb-slices sources if running from a typical dev checkout.
+lib = File.expand_path('../../../../merb/merb-slices/lib', __FILE__)
+$LOAD_PATH.unshift(lib) if File.directory?(lib)
 require 'merb-slices'
-require 'spec'
+
+# Use current merb-auth-core sources if running from a typical dev checkout.
+lib = File.expand_path('../../../merb-auth-core/lib', __FILE__)
+$LOAD_PATH.unshift(lib) if File.directory?(lib)
 require 'merb-auth-core'
+
+# Use current merb-auth-more sources if running from a typical dev checkout.
+lib = File.expand_path('../../../merb-auth-more/lib', __FILE__)
+$LOAD_PATH.unshift(lib) if File.directory?(lib)
+require 'merb-auth-more'
+
+# Satisfies Autotest and anyone else not using the Rake tasks
+require 'spec'
+
+
 # Add mauth_password_slice.rb to the search path
 Merb::Plugins.config[:merb_slices][:auto_register] = true
 Merb::Plugins.config[:merb_slices][:search_path]   = File.join(File.dirname(__FILE__), '..', 'lib', 'merb-auth-slice-password.rb')

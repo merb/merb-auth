@@ -1,5 +1,5 @@
-require File.join(File.dirname(__FILE__), "..", 'spec_helper.rb')
-require File.join(File.expand_path(File.dirname(__FILE__)), "..", ".." ,"lib", "merb-auth-more", "mixins", "redirect_back")
+require 'spec_helper'
+require 'merb-auth-more/mixins/redirect_back'
 
 
 describe "every call to redirect_back", :shared => true do

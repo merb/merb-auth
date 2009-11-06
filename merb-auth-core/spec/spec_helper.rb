@@ -1,12 +1,18 @@
-$TESTING=true
-$:.push File.join(File.dirname(__FILE__), '..', 'lib')
+require "rubygems"
 
-require 'rubygems'
+# Use current merb-core sources if running from a typical dev checkout.
+lib = File.expand_path('../../../../merb/merb-core/lib', __FILE__)
+$LOAD_PATH.unshift(lib) if File.directory?(lib)
 require 'merb-core'
 require 'merb-core/test'
 require 'merb-core/dispatch/session'
-require 'spec' # Satisfies Autotest and anyone else not using the Rake tasks
-require 'merb-auth-core'
+
+# The lib under test
+require "merb-auth-core"
+
+# Satisfies Autotest and anyone else not using the Rake tasks
+require 'spec'
+
 
 Merb.start  :environment    => "test", 
             :adapter        => "runner", 
