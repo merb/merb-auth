@@ -1,108 +1,122 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "rake_helpers"))
-require 'fileutils'
-include FileUtils
-require 'rake/clean'
+require 'rubygems'
+require 'rake'
 
-RUBY_FORGE_PROJECT  = "merb-auth"
-PROJECT_URL         = "http://merbivore.com"
-PROJECT_SUMMARY     = "merb-auth.  The official authentication plugin for merb.  Setup for the default stack"
-PROJECT_DESCRIPTION = PROJECT_SUMMARY
+# Assume a typical dev checkout to fetch the current merb-core version
+require File.expand_path('../../merb/merb-core/lib/merb-core/version', __FILE__)
 
-GEM_AUTHOR = "Daniel Neighman"
-GEM_EMAIL  = "has.sox@gmail.com"
+# Load this library's version information
+require File.expand_path('../lib/merb-auth/version', __FILE__)
 
-GEM_NAME    = "merb-auth"
-PKG_BUILD   = ENV['PKG_BUILD'] ? '.' + ENV['PKG_BUILD'] : ''
-GEM_VERSION = Merb::VERSION + PKG_BUILD
+begin
 
-RELEASE_NAME    = "REL #{GEM_VERSION}"
+  require 'jeweler'
 
-gems = %w[
-  merb-auth-core merb-auth-more merb-auth-slice-password
+  Jeweler::Tasks.new do |gemspec|
+
+    gemspec.version     = Merb::Auth::VERSION
+
+    gemspec.name        = "merb-auth"
+    gemspec.description = "Merb plugin that provides authentication support"
+    gemspec.summary     = "The official authentication plugin for merb.  Setup for the default stack"
+
+    gemspec.authors     = [ "Daniel Neighman" ]
+    gemspec.email       = "has.sox@gmail.com"
+    gemspec.homepage    = "http://merbivore.com/"
+
+    # Needs to be listed explicitly because jeweler
+    # otherwise thinks that everything inside the
+    # merb-auth repo belongs to the merb-auth meta gem
+    gemspec.files = [
+      'LICENSE',
+      'Rakefile',
+      'README.textile',
+      'TODO',
+      'lib/merb-auth.rb',
+      'lib/merb-auth/version.rb'
+    ]
+
+    # Runtime dependencies
+    gemspec.add_dependency 'merb-core',                "~> #{Merb::VERSION}"
+    gemspec.add_dependency 'merb-auth-core',           "~> #{Merb::VERSION}"
+    gemspec.add_dependency 'merb-auth-more',           "~> #{Merb::VERSION}"
+    gemspec.add_dependency 'merb-auth-slice-password', "~> #{Merb::VERSION}"
+
+  end
+
+  Jeweler::GemcutterTasks.new
+
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
+end
+
+require 'spec/rake/spectask'
+Spec::Rake::SpecTask.new(:spec) do |spec|
+  spec.spec_opts << '--options' << 'spec/spec.opts' if File.exists?('spec/spec.opts')
+  spec.libs << 'lib' << 'spec'
+  spec.spec_files = FileList['spec/**/*_spec.rb']
+end
+
+Spec::Rake::SpecTask.new(:rcov) do |spec|
+  spec.libs << 'lib' << 'spec'
+  spec.pattern = 'spec/**/*_spec.rb'
+  spec.rcov = true
+end
+
+
+def gem_command(command)
+  sh "#{RUBY} -S #{(ENV['JEWELER_INSTALL_COMMAND'] || 'gem')} #{command}"
+end
+
+def rake_command(command)
+  sh "#{RUBY} -S rake #{command}"
+end
+
+
+merb_auth_gems = [
+  'merb-auth-core',
+  'merb-auth-more',
+  'merb-auth-slice-password',
+  'merb-auth'
 ]
 
-desc "Publish Merb More gem to RubyForge, one by one."
-task :release do
-  packages = %w( gem tgz zip ).collect{ |ext| "pkg/#{GEM_NAME}-#{GEM_VERSION}.#{ext}" }
+# FIXME
+# Clear out jeweler generated install task
+# We want to install all merb-auth gems
 
-  begin
-    sh %{rubyforge login}
-    sh %{rubyforge add_release #{RUBY_FORGE_PROJECT} #{GEM_NAME} #{GEM_VERSION} #{packages.join(' ')}}
-    sh %{rubyforge add_file #{RUBY_FORGE_PROJECT} #{GEM_NAME} #{GEM_VERSION} #{packages.join(' ')}}
-  rescue Exception => e
-    puts
-    puts "Release failed: #{e.message}"
-    puts
-    puts "Set PKG_BUILD environment variable if you do a subrelease (0.9.4.2008_08_02 when version is 0.9.4)"
-  end
-  
-  %w(merb-auth-core merb-auth-more merb-auth-slice-password).each do |gem|
-    Dir.chdir(gem){ sh "#{Gem.ruby} -S rake release" }
+desc "Install all merb stack gems"
+task :install => [] do
+  merb_auth_gems.each do |gem_name|
+    Dir.chdir(gem_name) { rake_command "install" }
   end
 end
 
-merb_auth_spec = Gem::Specification.new do |s|
-  s.rubyforge_project = RUBY_FORGE_PROJECT
-  s.name         = GEM_NAME
-  s.version      = GEM_VERSION
-  s.platform     = Gem::Platform::RUBY
-  s.author       = GEM_AUTHOR
-  s.email        = GEM_EMAIL
-  s.homepage     = "http://www.merbivore.com"
-  s.summary      = PROJECT_SUMMARY
-  s.description  = PROJECT_SUMMARY
-  s.files = %w(LICENSE README.textile Rakefile TODO) + Dir.glob("{lib,spec}/**/*")
-  s.add_dependency "merb-core", "~> #{GEM_VERSION}"
-  gems.each do |gem|
-    s.add_dependency gem, "~> #{GEM_VERSION}"
-  end
-end
-
-CLEAN.include ["**/.*.sw?", "pkg", "lib/*.bundle", "*.gem", "doc/rdoc", ".config", "coverage", "cache"]
-
-Rake::GemPackageTask.new(merb_auth_spec) do |package|
-  package.gem_spec = merb_auth_spec
-end
-
-task :package => ["lib/merb-auth.rb", :build_children]
-desc "Create merb-auth.rb"
-task "lib/merb-auth.rb" do
-  mkdir_p "lib"
-  File.open("lib/merb-auth.rb","w+") do |file|
-    file.puts "### AUTOMATICALLY GENERATED. DO NOT EDIT!"
-    gems.each do |gem|
-      next if gem == "merb-gen"
-      file.puts "require '#{gem}'"
-    end
-  end
-end
-
-task :build_children do
-  %w(merb-auth-core merb-auth-more merb-auth-slice-password).each do |dir|
-    Dir.chdir(dir) { sh "#{Gem.ruby} -S rake package" }
-  end  
-end
-
-desc "install the plugin as a gem"
-task :install do
-  Merb::RakeHelper.install(GEM_NAME, :version => GEM_VERSION)
-end
-
-desc "Uninstall the gem"
+desc "Uninstall all merb stack gems"
 task :uninstall do
-  Merb::RakeHelper.uninstall(GEM_NAME, :version => GEM_VERSION)
+  merb_auth_gems.each do |gem_name|
+    gem_command "uninstall #{gem_name} --version=#{Merb::VERSION}"
+  end
 end
 
-desc "Create a gemspec file"
+desc "Build all merb stack gems"
+task :build do
+  merb_auth_gems.each do |gem_name|
+    Dir.chdir(gem_name) { rake_command "build" }
+  end
+end
+
+desc "Generate gemspecs for all merb stack gems"
 task :gemspec do
-  File.open("#{GEM_NAME}.gemspec", "w") do |file|
-    file.puts spec.to_ruby
+  merb_auth_gems[0..-2].each do |gem_name|
+    Dir.chdir(gem_name) { rake_command "gemspec" }
   end
 end
 
-desc "Run all specs"
+desc "Run specs for all merb stack gems"
 task :spec do
-  gems.each do |gem|
-    Dir.chdir(gem) { sh "#{Gem.ruby} -S rake spec" }
+  # Omit the merb-auth metagem, no specs there
+  merb_auth_gems[0..-2].each do |gem_name|
+    Dir.chdir(gem_name) { rake_command "spec" }
   end
 end
+
+task :default => 'spec'

@@ -1,59 +1,53 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "rake_helpers"))
+require 'rubygems'
+require 'rake'
 
-RUBY_FORGE_PROJECT = "merb-auth"
-GEM_NAME = "merb-auth-core"
-PKG_BUILD   = ENV['PKG_BUILD'] ? '.' + ENV['PKG_BUILD'] : ''
-GEM_VERSION = Merb::VERSION + PKG_BUILD
+# Assume a typical dev checkout to fetch the current merb-core version
+require File.expand_path('../../../merb/merb-core/lib/merb-core/version', __FILE__)
 
-AUTHOR = "Adam French, Daniel Neighman"
-EMAIL = "has.sox@gmail.com"
-HOMEPAGE = "http://merbivore.com/"
-SUMMARY = "An Authentication framework for Merb"
+# Load this library's version information
+require File.expand_path('../lib/merb-auth-core/version', __FILE__)
 
-spec = Gem::Specification.new do |s|
-  s.rubyforge_project = 'merb'
-  s.name = GEM_NAME
-  s.version = GEM_VERSION
-  s.platform = Gem::Platform::RUBY
-  s.has_rdoc = true
-  s.extra_rdoc_files = ["README.textile", "LICENSE", "TODO"]
-  s.summary = SUMMARY
-  s.description = s.summary
-  s.author = AUTHOR
-  s.email = EMAIL
-  s.homepage = HOMEPAGE
-  s.add_dependency('merb-core', "~> #{Merb::VERSION}")
-  s.require_path = 'lib'
-  s.files = %w(LICENSE README.textile Rakefile TODO) + Dir.glob("{lib,spec}/**/*")
-  
-end
+begin
 
-Rake::GemPackageTask.new(spec) do |pkg|
-  pkg.gem_spec = spec
-end
+  require 'jeweler'
 
-desc "install the plugin as a gem"
-task :install do
-  Merb::RakeHelper.install(GEM_NAME, :version => GEM_VERSION)
-end
+  Jeweler::Tasks.new do |gemspec|
 
-desc "Uninstall the gem"
-task :uninstall do
-  Merb::RakeHelper.uninstall(GEM_NAME, :version => GEM_VERSION)
-end
+    gemspec.version     = Merb::Auth::Core::VERSION
 
-desc "Create a gemspec file"
-task :gemspec do
-  File.open("#{GEM_NAME}.gemspec", "w") do |file|
-    file.puts spec.to_ruby
+    gemspec.name        = "merb-auth-core"
+    gemspec.description = "An Authentication framework for Merb"
+    gemspec.summary     = "Merb plugin that provides basic authentication support"
+
+    gemspec.authors     = [ "Adam French", "Daniel Neighman" ]
+    gemspec.email       = "has.sox@gmail.com"
+    gemspec.homepage    = "http://merbivore.com/"
+
+    gemspec.files       = %w(LICENSE Rakefile README.textile TODO) + Dir['{lib,spec}/**/*']
+
+    # Runtime dependencies
+    gemspec.add_dependency 'merb-core', "~> #{Merb::VERSION}"
+
+    # Development dependencies              
+    gemspec.add_development_dependency 'rspec', ">= 1.2.9"
+
   end
+
+  Jeweler::GemcutterTasks.new
+
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
 
-desc "Run all specs"
-Spec::Rake::SpecTask.new("spec") do |t|
-  t.spec_opts = ["--format", "specdoc", "--colour"]
-  t.spec_files = Dir["spec/**/*_spec.rb"].sort
-  t.rcov = false
-  t.rcov_opts << '--sort' << 'coverage' << '--sort-reverse'
-  t.rcov_opts << '--only-uncovered'
+require 'spec/rake/spectask'
+Spec::Rake::SpecTask.new(:spec) do |spec|
+  spec.spec_opts << '--options' << 'spec/spec.opts' if File.exists?('spec/spec.opts')
+  spec.libs << 'lib' << 'spec'
+  spec.spec_files = FileList['spec/**/*_spec.rb']
+end
+
+Spec::Rake::SpecTask.new(:rcov) do |spec|
+  spec.libs << 'lib' << 'spec'
+  spec.pattern = 'spec/**/*_spec.rb'
+  spec.rcov = true
 end

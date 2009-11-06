@@ -1,48 +1,59 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "rake_helpers"))
+require 'rubygems'
+require 'rake'
 
-RUBY_FORGE_PROJECT = "merb-auth"
-GEM_NAME = "merb-auth-slice-password"
-AUTHOR = "Daniel Neighman"
-EMAIL = "has.sox@gmail.com"
-HOMEPAGE = "http://merbivore.com/"
-SUMMARY = "Merb Slice that provides UI for password strategy of merb-auth."
-PKG_BUILD   = ENV['PKG_BUILD'] ? '.' + ENV['PKG_BUILD'] : ''
-GEM_VERSION = Merb::VERSION + PKG_BUILD
+# Load merb-slices, merb-auth-core and merb-auth-more version information
+require File.expand_path('../../../merb/merb-slices/lib/merb-slices/version', __FILE__)
+require File.expand_path('../../merb-auth-core/lib/merb-auth-core/version', __FILE__)
+require File.expand_path('../../merb-auth-more/lib/merb-auth-more/version', __FILE__)
 
-spec = Gem::Specification.new do |s|
-  s.rubyforge_project = 'merb'
-  s.name = GEM_NAME
-  s.version = GEM_VERSION
-  s.platform = Gem::Platform::RUBY
-  s.has_rdoc = true
-  s.extra_rdoc_files = ["README.textile", "LICENSE", 'TODO']
-  s.summary = SUMMARY
-  s.description = s.summary
-  s.author = AUTHOR
-  s.email = EMAIL
-  s.homepage = HOMEPAGE
-  s.add_dependency('merb-slices', ">= #{Merb::VERSION}")
-  s.add_dependency('merb-auth-core', ">= #{Merb::VERSION}")
-  s.add_dependency('merb-auth-more', ">= #{Merb::VERSION}")
-  s.require_path = 'lib'
-  s.files = %w(LICENSE README.textile Rakefile TODO) + Dir.glob("{lib,spec,app,public,stubs}/**/*")
-end
+# Load this library's version information
+require File.expand_path('../lib/merb-auth-slice-password/version', __FILE__)
 
-Rake::GemPackageTask.new(spec) do |pkg|
-  pkg.gem_spec = spec
-end
+begin
 
-desc "Install MerbAuthSlicePassword as a gem"
-task :install do
-  Merb::RakeHelper.install(GEM_NAME, :version => GEM_VERSION)
-end
+  require 'jeweler'
 
-desc "Create a gemspec file"
-task :gemspec do
-  File.open("#{GEM_NAME}.gemspec", "w") do |file|
-    file.puts spec.to_ruby
+  Jeweler::Tasks.new do |gemspec|
+
+    gemspec.version     = Merb::Auth::More::VERSION
+
+    gemspec.name        = "merb-auth-slice-password"
+    gemspec.description = "Merb Slice with password UI support"
+    gemspec.summary     = "Merb Slice that provides UI for password strategy of merb-auth."
+
+    gemspec.authors     = [ "Daniel Neighman" ]
+    gemspec.email       = "has.sox@gmail.com"
+    gemspec.homepage    = "http://merbivore.com/"
+
+    gemspec.files       = %w(LICENSE Rakefile README.textile TODO) + Dir[
+      '{app,config,lib,public,spec,stubs}/**/*'
+    ]
+
+    # Runtime dependencies
+    gemspec.add_dependency 'merb-slices',    "~> #{Merb::Slices::VERSION}"
+    gemspec.add_dependency 'merb-auth-core', "~> #{Merb::Auth::Core::VERSION}"
+    gemspec.add_dependency 'merb-auth-more', "~> #{Merb::Auth::More::VERSION}"
+
+    # Development dependencies              
+    gemspec.add_development_dependency 'rspec', ">= 1.2.9"
+
   end
+
+  Jeweler::GemcutterTasks.new
+
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
 
-desc 'Default: run spec examples'
-task :default => 'spec'
+require 'spec/rake/spectask'
+Spec::Rake::SpecTask.new(:spec) do |spec|
+  spec.spec_opts << '--options' << 'spec/spec.opts' if File.exists?('spec/spec.opts')
+  spec.libs << 'lib' << 'spec'
+  spec.spec_files = FileList['spec/**/*_spec.rb']
+end
+
+Spec::Rake::SpecTask.new(:rcov) do |spec|
+  spec.libs << 'lib' << 'spec'
+  spec.pattern = 'spec/**/*_spec.rb'
+  spec.rcov = true
+end
