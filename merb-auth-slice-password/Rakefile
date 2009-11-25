@@ -11,6 +11,7 @@ require File.expand_path('../lib/merb-auth-slice-password/version', __FILE__)
 
 begin
 
+  gem 'jeweler', '~> 1.4'
   require 'jeweler'
 
   Jeweler::Tasks.new do |gemspec|
