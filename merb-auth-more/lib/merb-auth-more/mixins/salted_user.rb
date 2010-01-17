@@ -29,6 +29,9 @@ class Merb::Authentication
           if defined?(DataMapper) && DataMapper::Resource > self
             require "#{path}/dm_salted_user"
             extend(Merb::Authentication::Mixins::SaltedUser::DMClassMethods)
+          elsif defined?(Mongoid) && Mongoid::Document > self
+            require "#{path}/mongoid_salted_user"
+            extend(Merb::Authentication::Mixins::SaltedUser::MongoidClassMethods)
           elsif defined?(ActiveRecord) && ancestors.include?(ActiveRecord::Base)
             require "#{path}/ar_salted_user"
             extend(Merb::Authentication::Mixins::SaltedUser::ARClassMethods)
