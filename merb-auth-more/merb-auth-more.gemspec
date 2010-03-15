@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{merb-auth-more}
-  s.version = "1.1.0.pre"
+  s.version = "1.1.0.rc1"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Neighman"]
-  s.date = %q{2009-11-06}
+  s.date = %q{2010-03-15}
   s.description = %q{Addons for merb-auth-core}
   s.email = %q{has.sox@gmail.com}
   s.extra_rdoc_files = [
@@ -48,7 +48,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://merbivore.com/}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Additional resources for use with the merb-auth-core authentication framework.}
 
   if s.respond_to? :specification_version then
@@ -56,14 +56,14 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<merb-auth-core>, ["~> 1.1.0.pre"])
+      s.add_runtime_dependency(%q<merb-auth-core>, ["~> 1.1.0.rc1"])
       s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
     else
-      s.add_dependency(%q<merb-auth-core>, ["~> 1.1.0.pre"])
+      s.add_dependency(%q<merb-auth-core>, ["~> 1.1.0.rc1"])
       s.add_dependency(%q<rspec>, [">= 1.2.9"])
     end
   else
-    s.add_dependency(%q<merb-auth-core>, ["~> 1.1.0.pre"])
+    s.add_dependency(%q<merb-auth-core>, ["~> 1.1.0.rc1"])
     s.add_dependency(%q<rspec>, [">= 1.2.9"])
   end
 end
