@@ -14,7 +14,7 @@ begin
 
   Jeweler::Tasks.new do |gemspec|
 
-    gemspec.version     = Merb::Auth::More::VERSION
+    gemspec.version     = Merb::Auth::More::VERSION.dup
 
     gemspec.name        = "merb-auth-more"
     gemspec.description = "Addons for merb-auth-core"

@@ -16,7 +16,7 @@ begin
 
   Jeweler::Tasks.new do |gemspec|
 
-    gemspec.version     = Merb::Auth::More::VERSION
+    gemspec.version     = Merb::Auth::More::VERSION.dup
 
     gemspec.name        = "merb-auth-slice-password"
     gemspec.description = "Merb Slice with password UI support"
