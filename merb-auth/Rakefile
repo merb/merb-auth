@@ -3,6 +3,7 @@ require 'rake'
 
 # Assume a typical dev checkout to fetch the current merb-core version
 require File.expand_path('../../../merb/merb-core/lib/merb-core/version', __FILE__)
+require File.expand_path('../../merb-auth-core/lib/merb-auth-core/version', __FILE__)
 
 # Load this library's version information
 require File.expand_path('../lib/merb-auth/version', __FILE__)
@@ -37,10 +38,10 @@ begin
     ]
 
     # Runtime dependencies
-    gemspec.add_dependency 'merb-core',                "~> #{Merb::VERSION}"
-    gemspec.add_dependency 'merb-auth-core',           "~> #{Merb::VERSION}"
-    gemspec.add_dependency 'merb-auth-more',           "~> #{Merb::VERSION}"
-    gemspec.add_dependency 'merb-auth-slice-password', "~> #{Merb::VERSION}"
+    gemspec.add_dependency 'merb-core',                '~> 1.1'
+    gemspec.add_dependency 'merb-auth-core',           "~> #{Merb::Auth::Core::VERSION}"
+    gemspec.add_dependency 'merb-auth-more',           "~> #{Merb::Auth::Core::VERSION}"
+    gemspec.add_dependency 'merb-auth-slice-password', "~> #{Merb::Auth::Core::VERSION}"
 
   end
 
