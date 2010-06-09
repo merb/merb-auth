@@ -1,6 +1,6 @@
 module Merb
   class Authentication
-  
+
     def errors
       @errors ||= Errors.new
     end

@@ -88,7 +88,7 @@ describe 'every salted user', :shared => true do
   it "should set the salt" do
     @new_user.salt.should be_nil
     @new_user.send(:encrypt_password)
-    @new_user.salt.should_not be_nil    
+    @new_user.salt.should_not be_nil
   end
 
   it "should set the salt even when user is not new record but salt is blank" do

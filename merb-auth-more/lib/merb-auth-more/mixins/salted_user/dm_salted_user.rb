@@ -10,20 +10,20 @@ class Merb::Authentication
             if Merb::Authentication::Mixins::SaltedUser > base
               property :salt, String
             end
-            
+
             validates_present        :password, :if => proc{|m| m.password_required?}
             validates_is_confirmed   :password, :if => proc{|m| m.password_required?}
-            
+
             before :save,   :encrypt_password
           end # base.class_eval
-          
+
         end # self.extended
-        
+
         def authenticate(login, password)
           @u = first(Merb::Authentication::Strategies::Basic::Base.login_param => login)
           @u && @u.authenticated?(password) ? @u : nil
         end
-      end # DMClassMethods      
+      end # DMClassMethods
     end # SaltedUser
   end # Mixins
 end # Merb::Authentication

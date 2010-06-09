@@ -10,20 +10,20 @@ class Merb::Authentication
             if Merb::Authentication::Mixins::SaltedUser > base
               field :salt, :type => String
             end
-            
+
             validates_presence_of :password, :if => proc{|m| m.password_required?}
             validates_confirmation_of :password, :if => proc{|m| m.password_required?}
-            
+
             before_save   :encrypt_password
           end # base.class_eval
-          
+
         end # self.extended
-        
+
         def authenticate(login, password)
           @u = first(:conditions => { Merb::Authentication::Strategies::Basic::Base.login_param => login })
           @u && @u.authenticated?(password) ? @u : nil
         end
-      end # MongoidClassMethods      
+      end # MongoidClassMethods
     end # SaltedUser
   end # Mixins
 end # Merb::Authentication

@@ -1,21 +1,21 @@
 require "spec/rake/spectask"
 namespace :slices do
   namespace :"merb-auth-slice-password" do
-      
+
     desc "Run slice specs within the host application context"
     task :spec => [ "spec:explain", "spec:default" ]
-    
+
     namespace :spec do
-      
+
       slice_root = File.expand_path(File.join(File.dirname(__FILE__), '..', '..'))
-      
+
       task :explain do
         puts "\nNote: By running MerbAuthSlicePassword specs inside the application context any\n" +
              "overrides could break existing specs. This isn't always a problem,\n" +
              "especially in the case of views. Use these spec tasks to check how\n" +
              "well your application conforms to the original slice implementation."
       end
-      
+
       Spec::Rake::SpecTask.new('default') do |t|
         t.spec_opts = ["--format", "specdoc", "--colour"]
         t.spec_files = Dir["#{slice_root}/spec/**/*_spec.rb"].sort
@@ -36,7 +36,7 @@ namespace :slices do
         t.spec_opts = ["--format", "specdoc", "--colour"]
         if(ENV['CONTROLLER'])
           t.spec_files = Dir["#{slice_root}/spec/controllers/**/#{ENV['CONTROLLER']}_spec.rb"].sort
-        else    
+        else
           t.spec_files = Dir["#{slice_root}/spec/controllers/**/*_spec.rb"].sort
         end
       end
@@ -59,8 +59,8 @@ namespace :slices do
         t.libs = ['lib', 'server/lib' ]
         t.spec_files = Dir["#{slice_root}/spec/**/*_spec.rb"].sort
       end
-      
+
     end
-    
+
   end
 end

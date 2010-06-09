@@ -6,7 +6,7 @@ describe "merb-auth-core" do
       controller.should_receive(:ensure_authenticated)
     end
   end
-  
+
   it "should not ensure_authenticated when skipped" do
     dispatch_to(Dingbats, :index) do |controller|
       controller.should_not_receive(:ensure_authenticated)

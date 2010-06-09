@@ -14,9 +14,9 @@ require "merb-auth-core"
 require 'spec'
 
 
-Merb.start  :environment    => "test", 
-            :adapter        => "runner", 
-            :session_store  => "cookie", 
+Merb.start  :environment    => "test",
+            :adapter        => "runner",
+            :session_store  => "cookie",
             :session_secret_key => "d3a6e6f99a25004da82b71af8b9ed0ab71d3ea21"
 
 module StrategyHelper
@@ -48,7 +48,7 @@ end
 
 class User
   attr_accessor :name, :age, :id
-  
+
   def initialize(opts = {})
     @name = opts.fetch(:name, "NAME")
     @age  = opts.fetch(:age,  42)
@@ -58,7 +58,7 @@ end
 
 class Users < Application
   before :ensure_authenticated
-  
+
   def index
     "You Made It!"
   end
@@ -79,7 +79,7 @@ class Merb::Authentication
       u = User.new(:id => id)
     end
   end
-  
+
   def store_user(user)
     user.nil? ? nil : 24
   end
@@ -91,7 +91,7 @@ class Viking
   def self.captures
     @captures ||= []
   end
-  
+
   def self.capture(klass)
     @captures ||= []
     case klass

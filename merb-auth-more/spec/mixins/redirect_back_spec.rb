@@ -40,7 +40,7 @@ describe "every call to redirect_back", :shared => true do
 end
 
 describe "redirect_back" do
-  
+
   before(:all) do
     Merb::Config[:exception_details] = true
     clear_strategies!
@@ -52,12 +52,12 @@ describe "redirect_back" do
       match("/").to(:controller => "my_controller")
       match("/logout", :method => :delete).to(:controller => "sessions", :action => "destroy")
     end
-    
+
     class Merb::Authentication
       def store_user(user); user; end
       def fetch_user(session_info); session_info; end
     end
-    
+
     # class MyStrategy < Merb::Authentication::Strategy; def run!; request.env["USER"]; end; end
     class MyStrategy < Merb::Authentication::Strategy
       def run!
@@ -65,25 +65,25 @@ describe "redirect_back" do
         params[:pass_auth]
       end
     end
-    
+
     class Application < Merb::Controller; end
-    
+
     class Exceptions < Merb::Controller
       include Merb::Authentication::Mixins::RedirectBack
-      
+
       def unauthenticated; end
 
     end
-    
+
     class Sessions < Merb::Controller
       before :ensure_authenticated
       def update
         redirect_back_or "/", :ignore => [url(:login)]
       end
-      
+
       def destroy
         session.abandon!
-      end      
+      end
     end
 
     class MyController < Application
@@ -93,8 +93,8 @@ describe "redirect_back" do
       end
     end
 
-  end 
-  
+  end
+
   def login
     request("/login", :method => "put", :params => {:pass_auth => true})
   end
@@ -114,5 +114,5 @@ describe "redirect_back" do
     end
     it_should_behave_like 'every call to redirect_back'
   end
-  
+
 end

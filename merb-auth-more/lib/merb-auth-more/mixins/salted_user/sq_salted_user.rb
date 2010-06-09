@@ -41,10 +41,10 @@ class Merb::Authentication
               validates_presence_of     :password_confirmation,      :if => :password_required?
               validates_confirmation_of :password,                   :if => :password_required?
             end
-            include Merb::Authentication::Mixins::SaltedUser::SQInstanceMethods 
+            include Merb::Authentication::Mixins::SaltedUser::SQInstanceMethods
           end
         end # self.extended
-        
+
         def authenticate(login, password)
           @u = find(Merb::Authentication::Strategies::Basic::Base.login_param => login)
           @u && @u.authenticated?(password) ? @u : nil
@@ -53,4 +53,4 @@ class Merb::Authentication
 
     end # SaltedUser
   end # Mixins
-end # Merb::Authentication 
+end # Merb::Authentication

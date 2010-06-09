@@ -12,7 +12,7 @@ require "merb-auth-core/router_helper"
 require "merb-auth-core/callbacks"
 
 Merb::BootLoader.before_app_loads do
-  # require code that must be loaded before the application 
+  # require code that must be loaded before the application
   Merb::Controller.send(:include, Merb::AuthenticatedHelper)
 end
 

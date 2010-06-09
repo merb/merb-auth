@@ -5,17 +5,17 @@ Merb::Router.extensions do
   # as an argument to the authenticate method.
   #
   # ===Example
-  #  
+  #
   #    authenticate(OpenID) do
   #       resource :posts
-  #      
+  #
   #       authenticate do
   #         match("/").to(:controller => "home")
   #       end
   #    end
-  # 
+  #
   # This is a simple example that shows protecting the entire set of routes for
-  # the posts resource with the OpenID strategy.  
+  # the posts resource with the OpenID strategy.
   #
   # The match on "/" is protected, _first_ by the OpenID strategy,
   # then by the dfeeault set of stratgies.  Strategies are applied from the
@@ -30,7 +30,7 @@ Merb::Router.extensions do
         else
           result = request.session.authenticate!(request, params, *strategies)
         end
-      
+
         if request.session.authentication.halted?
           auth = request.session.authentication
           [auth.status, auth.headers, auth.body]
@@ -41,5 +41,5 @@ Merb::Router.extensions do
     end
     defer(p, &block)
   end
-  
+
 end

@@ -6,9 +6,9 @@ require 'merb-auth-more/mixins/salted_user'
 DB = Sequel.sqlite unless Object.const_defined?('DB')
 
 describe "A Sequel Salted User" do
-  
+
   include UserHelper
-  
+
   before(:all) do
 
     DB.drop_table(:users) if DB.table_exists? :users

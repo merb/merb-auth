@@ -6,16 +6,16 @@ require 'merb-auth-more/mixins/salted_user'
 describe "A DataMapper Salted User" do
 
   include UserHelper
-  
+
   before(:all) do
 
     DataMapper.setup(:default, "sqlite3::memory:")
-    
+
     class DataMapperSaltedUser
 
       include DataMapper::Resource
       include Merb::Authentication::Mixins::SaltedUser
-      
+
       property :id,    Serial
       property :email, String
       property :login, String
