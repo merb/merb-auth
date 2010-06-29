@@ -11,8 +11,8 @@ class Merb::Authentication
               property :salt, String
             end
 
-            validates_present        :password, :if => proc{|m| m.password_required?}
-            validates_is_confirmed   :password, :if => proc{|m| m.password_required?}
+            validates_presence_of       :password, :if => proc{|m| m.password_required?}
+            validates_confirmation_of   :password, :if => proc{|m| m.password_required?}
 
             before :save,   :encrypt_password
           end # base.class_eval
