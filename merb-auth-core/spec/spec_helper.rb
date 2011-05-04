@@ -11,8 +11,7 @@ require 'merb-core/dispatch/session'
 require "merb-auth-core"
 
 # Satisfies Autotest and anyone else not using the Rake tasks
-require 'spec'
-
+require 'rspec'
 
 Merb.start  :environment    => "test",
             :adapter        => "runner",
@@ -32,7 +31,7 @@ module StrategyHelper
   end
 end
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   config.include(Merb::Test::ViewHelper)
   config.include(Merb::Test::RouteHelper)
   config.include(Merb::Test::ControllerHelper)

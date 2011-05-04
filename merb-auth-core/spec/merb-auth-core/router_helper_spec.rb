@@ -5,6 +5,7 @@ describe "router protection" do
   before(:each) do
     class Foo < Merb::Controller
       def index; "INDEX"; end
+      def other; "OTHER"; end
     end
 
     clear_strategies!
@@ -44,6 +45,8 @@ describe "router protection" do
         authenticate(Mtwo, Mone) do
           match("/single_level_specific").register
         end
+
+        match("/some").register(:action => 'other')
       end
     end
   end
@@ -51,60 +54,60 @@ describe "router protection" do
   describe "single level default" do
 
     it "should allow access to the controller if the strategy passes" do
-      result = request("/single_level_default", :params => {"Mtwo" => true})
+      result = visit("/single_level_default", :post, "Mtwo" => true)
       result.body.should == "INDEX"
       Viking.captures.should == %w(Mone Mthree Mtwo)
     end
 
     it "should fail if no strategies match" do
-      result = request("/single_level_default")
+      result = visit("/single_level_default")
       result.status.should == Merb::Controller::Unauthenticated.status
     end
 
     it "should set return a rack array if the strategy redirects" do
-      result = request("/single_level_default", :params => {"url" => "/some/url"})
+      result = mock_request("/single_level_default", :post, "url" => "/some/url")
       result.status.should == 302
-      result.body.should_not =="INDEX"
+      result.body.should_not == "INDEX"
     end
   end
 
   describe "nested_specific" do
 
     it "should allow access to the controller if the strategy passes" do
-      result = request("/nested_specific", :params => {"Mtwo" => true})
+      result = visit("/nested_specific", :post, "Mtwo" => true)
       result.body.should == "INDEX"
       Viking.captures.should == %w(Mone Mthree Mtwo)
     end
 
     it "should fail if no strategies match" do
-      result = request("/nested_specific")
+      result = visit("/nested_specific")
       result.status.should == Merb::Controller::Unauthenticated.status
     end
 
     it "should set return a rack array if the strategy redirects" do
-      result = request("/nested_specific", :params => {"url" => "/some/url"})
+      result = mock_request("/nested_specific", :post, "url" => "/some/url")
       result.status.should == 302
-      result.body.should_not =="INDEX"
+      result.body.should_not == "INDEX"
     end
   end
 
   describe "single_level_specific" do
 
     it "should allow access to the controller if the strategy passes" do
-      result = request("/single_level_specific", :params => {"Mone" => true})
+      result = visit("/single_level_specific", :post, "Mone" => true)
       result.body.should == "INDEX"
       Viking.captures.should == %w(Mtwo Mone)
     end
 
     it "should fail if no strategies match" do
-      result = request("/single_level_specific")
+      result = visit("/single_level_specific")
       result.status.should == Merb::Controller::Unauthenticated.status
     end
 
     it "should set return a rack array if the strategy redirects" do
-      result = request("/single_level_specific", :params => {"url" => "/some/url"})
+      result = mock_request("/single_level_specific", :post, "url" => "/some/url")
       result.status.should == 302
-      result.body.should_not =="INDEX"
+      result.body.should_not == "INDEX"
     end
   end
 

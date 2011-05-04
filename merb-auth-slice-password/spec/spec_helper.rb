@@ -21,7 +21,7 @@ $LOAD_PATH.unshift(lib) if File.directory?(lib)
 require 'merb-auth-more'
 
 # Satisfies Autotest and anyone else not using the Rake tasks
-require 'spec'
+require 'rspec'
 
 
 # Add mauth_password_slice.rb to the search path
@@ -57,7 +57,7 @@ module Merb
   end
 end
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   config.include(Merb::Test::ViewHelper)
   config.include(Merb::Test::RouteHelper)
   config.include(Merb::Test::ControllerHelper)

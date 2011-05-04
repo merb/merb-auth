@@ -27,10 +27,10 @@ begin
     gemspec.files       = %w(LICENSE Rakefile README.textile TODO) + Dir['{lib,spec}/**/*']
 
     # Runtime dependencies
-    gemspec.add_dependency 'merb-core', '~> 1.1'
+    gemspec.add_dependency 'merb-core', '~> 1.2'
 
-    # Development dependencies              
-    gemspec.add_development_dependency 'rspec', ">= 1.2.9"
+    # Development dependencies
+    gemspec.add_development_dependency 'rspec', ">= 2.5"
 
   end
 
@@ -40,15 +40,14 @@ rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
 
-require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:spec) do |spec|
-  spec.spec_opts << '--options' << 'spec/spec.opts' if File.exists?('spec/spec.opts')
-  spec.libs << 'lib' << 'spec'
-  spec.spec_files = FileList['spec/**/*_spec.rb']
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec) do |spec|
+  spec.pattern = "spec/**/*_spec.rb"
+  spec.fail_on_error = false
 end
 
-Spec::Rake::SpecTask.new(:rcov) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.pattern = 'spec/**/*_spec.rb'
+RSpec::Core::RakeTask.new(:rcov) do |spec|
+  spec.pattern = "spec/**/*_spec.rb"
+  spec.fail_on_error = false
   spec.rcov = true
 end

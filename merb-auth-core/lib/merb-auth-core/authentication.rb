@@ -1,7 +1,8 @@
 module Merb
   class Authentication
     module Strategies; end
-    include Extlib::Hook
+    #include Extlib::Hook
+
     attr_accessor :session
     attr_writer   :error_message
 
@@ -160,7 +161,7 @@ module Merb
         when Class
           h[k] = k
         when String, Symbol
-          h[k] = Merb::Authentication::Strategies.full_const_get(k.to_s)
+          h[k] = "Merb::Authentication::Strategies::#{k.to_s.gsub(/^::/, '')}".constantize
         end
       end
     end

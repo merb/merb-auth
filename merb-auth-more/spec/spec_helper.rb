@@ -15,13 +15,13 @@ require 'merb-auth-core'
 # Use current merb_sequel sources if running from a typical dev checkout.
 lib = File.expand_path('../../../../merb_sequel/lib', __FILE__)
 $LOAD_PATH.unshift(lib) if File.directory?(lib)
-require 'merb_sequel'
+#require 'merb_sequel'
 
 # The lib under test
 require "merb-auth-more"
 
 # Satisfies Autotest and anyone else not using the Rake tasks
-require 'spec'
+require 'rspec'
 
 require 'shared_user_spec'
 
@@ -47,7 +47,7 @@ module StrategyHelper
   end
 end
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   config.include(Merb::Test::ViewHelper)
   config.include(Merb::Test::RouteHelper)
   config.include(Merb::Test::ControllerHelper)

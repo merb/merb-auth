@@ -25,7 +25,7 @@ module UserHelper
 
 end
 
-describe "every encrypted user", :shared => true do
+shared_examples_for "every encrypted user" do
 
   describe "class" do
 
@@ -81,7 +81,7 @@ describe "every encrypted user", :shared => true do
 
 end
 
-describe 'every salted user', :shared => true do
+shared_examples_for 'every salted user' do
 
   it { @new_user.should respond_to(:salt) }
 
@@ -100,7 +100,7 @@ describe 'every salted user', :shared => true do
 
 end
 
-describe 'every bcrypt user', :shared => true do
+shared_examples_for 'every bcrypt user' do
 
   it "should create a valid Bcrypt password" do
     lambda { @new_user.bcrypt_password }.should raise_error(BCrypt::Errors::InvalidHash)

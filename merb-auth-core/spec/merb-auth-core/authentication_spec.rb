@@ -141,7 +141,9 @@ describe "Merb::Authentication Session" do
 
   describe "Merb::Authentication" do
     it "Should be hookable" do
-      Merb::Authentication.should include(Extlib::Hook)
+      pending "We are migrating away from extlib" do
+        Merb::Authentication.should include(Extlib::Hook)
+      end
     end
 
   end
@@ -343,7 +345,7 @@ describe "Merb::Authentication Session" do
     end
 
     it "should put the body of the strategy as the response body of the controller" do
-      controller = request "/", :params => {:url => "/some/url"}
+      controller = mock_request("/", :put, :url => "/some/url")
       controller.should redirect_to("/some/url")
     end
   end

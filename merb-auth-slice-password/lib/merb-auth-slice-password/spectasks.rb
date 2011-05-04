@@ -1,4 +1,4 @@
-require "spec/rake/spectask"
+require "rspec/core/rake_task"
 namespace :slices do
   namespace :"merb-auth-slice-password" do
 
@@ -16,48 +16,42 @@ namespace :slices do
              "well your application conforms to the original slice implementation."
       end
 
-      Spec::Rake::SpecTask.new('default') do |t|
-        t.spec_opts = ["--format", "specdoc", "--colour"]
-        t.spec_files = Dir["#{slice_root}/spec/**/*_spec.rb"].sort
+      RSpec::Core::RakeTask.new('default') do |t|
+        t.pattern = "#{slice_root}/spec/**/*_spec.rb"
       end
 
       desc "Run all model specs, run a spec for a specific Model with MODEL=MyModel"
-      Spec::Rake::SpecTask.new('model') do |t|
-        t.spec_opts = ["--format", "specdoc", "--colour"]
+      RSpec::Core::RakeTask.new('model') do |t|
         if(ENV['MODEL'])
-          t.spec_files = Dir["#{slice_root}/spec/models/**/#{ENV['MODEL']}_spec.rb"].sort
+          t.pattern = "#{slice_root}/spec/models/**/#{ENV['MODEL']}_spec.rb"
         else
-          t.spec_files = Dir["#{slice_root}/spec/models/**/*_spec.rb"].sort
+          t.pattern = "#{slice_root}/spec/models/**/*_spec.rb"
         end
       end
 
       desc "Run all controller specs, run a spec for a specific Controller with CONTROLLER=MyController"
-      Spec::Rake::SpecTask.new('controller') do |t|
-        t.spec_opts = ["--format", "specdoc", "--colour"]
+      RSpec::Core::RakeTask.new('controller') do |t|
         if(ENV['CONTROLLER'])
-          t.spec_files = Dir["#{slice_root}/spec/controllers/**/#{ENV['CONTROLLER']}_spec.rb"].sort
+          t.pattern = "#{slice_root}/spec/controllers/**/#{ENV['CONTROLLER']}_spec.rb"
         else
-          t.spec_files = Dir["#{slice_root}/spec/controllers/**/*_spec.rb"].sort
+          t.pattern = "#{slice_root}/spec/controllers/**/*_spec.rb"
         end
       end
 
       desc "Run all view specs, run specs for a specific controller (and view) with CONTROLLER=MyController (VIEW=MyView)"
-      Spec::Rake::SpecTask.new('view') do |t|
-        t.spec_opts = ["--format", "specdoc", "--colour"]
+      RSpec::Core::RakeTask.new('view') do |t|
         if(ENV['CONTROLLER'] and ENV['VIEW'])
-          t.spec_files = Dir["#{slice_root}/spec/views/**/#{ENV['CONTROLLER']}/#{ENV['VIEW']}*_spec.rb"].sort
+          t.pattern = "#{slice_root}/spec/views/**/#{ENV['CONTROLLER']}/#{ENV['VIEW']}*_spec.rb"
         elsif(ENV['CONTROLLER'])
-          t.spec_files = Dir["#{slice_root}/spec/views/**/#{ENV['CONTROLLER']}/*_spec.rb"].sort
+          t.pattern = "#{slice_root}/spec/views/**/#{ENV['CONTROLLER']}/*_spec.rb"
         else
-          t.spec_files = Dir["#{slice_root}/spec/views/**/*_spec.rb"].sort
+          t.pattern = "#{slice_root}/spec/views/**/*_spec.rb"
         end
       end
 
-      desc "Run all specs and output the result in html"
-      Spec::Rake::SpecTask.new('html') do |t|
-        t.spec_opts = ["--format", "html"]
-        t.libs = ['lib', 'server/lib' ]
-        t.spec_files = Dir["#{slice_root}/spec/**/*_spec.rb"].sort
+      desc "Run all specs"
+      RSpec::Core::RakeTask.new('all') do |t|
+        t.pattern = "#{slice_root}/spec/**/*_spec.rb"
       end
 
     end

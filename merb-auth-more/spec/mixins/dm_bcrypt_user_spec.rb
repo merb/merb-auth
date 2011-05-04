@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'dm-core'
+require 'dm-migrations'
 require 'dm-validations'
 require 'merb-auth-more/mixins/bcrypt_user'
 

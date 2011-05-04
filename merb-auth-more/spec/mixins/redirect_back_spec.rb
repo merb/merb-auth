@@ -2,39 +2,42 @@ require 'spec_helper'
 require 'merb-auth-more/mixins/redirect_back'
 
 
-describe "every call to redirect_back", :shared => true do
+shared_examples_for "every call to redirect_back" do
 
   it "should set the return_to in the session when sent to the exceptions controller from a failed login" do
-    r = request("/go_back")
+    r = visit("/go_back")
     r.status.should == Merb::Controller::Unauthenticated.status
+
     r2 = login
-    r2.should redirect_to(@return_to_after_failed_login)
+    r2.body.should == "Went back"
   end
 
   it  "should not set the return_to in the session when deliberately going to unauthenticated" do
     r = login
-    r.should redirect_to("/")
+    r.body.should == "Index"
   end
 
   it "should still redirect to the original even if it's failed many times" do
-    request("/go_back")
-    request("/login", :method => "put", :params => {:pass_auth => false})
-    request("/login", :method => "put", :params => {:pass_auth => false})
-    request("/login", :method => "put", :params => {:pass_auth => false})
+    visit("/go_back")
+    visit("/login", :put, :pass_auth => false)
+    visit("/login", :put, :pass_auth => false)
+    visit("/login", :put, :pass_auth => false)
+
     r = login
-    r.should redirect_to(@return_to_after_failed_login)
+    r.body.should == "Went back"
   end
 
   it "should not redirect back to a previous redirect back after being logged out" do
-    request("/go_back")
-    request("/login", :method => "put", :params => {:pass_auth => false})
-    request("/login", :method => "put", :params => {:pass_auth => false})
-    request("/login", :method => "put", :params => {:pass_auth => false})
+    visit("/go_back")
+    visit("/login", :put, :pass_auth => false)
+    visit("/login", :put, :pass_auth => false)
+    visit("/login", :put, :pass_auth => false)
     r = login
-    r.should redirect_to(@return_to_after_failed_login)
-    request("/logout", :method => "delete")
+    r.body.should == "Went back"
+
+    visit("/logout", :delete)
     r = login
-    r.should redirect_to("/")
+    r.body.should == "Index"
   end
 
 end
@@ -48,7 +51,7 @@ describe "redirect_back" do
     Merb::Router.prepare do
       match("/login", :method => :get).to(:controller => "exceptions", :action => "unauthenticated").name(:login)
       match("/login", :method => :put).to(:controller => "sessions", :action => "update")
-      match("/go_back").to(:controller => "my_controller")
+      match("/go_back").to(:controller => "my_controller", :action => "go_back")
       match("/").to(:controller => "my_controller")
       match("/logout", :method => :delete).to(:controller => "sessions", :action => "destroy")
     end
@@ -89,20 +92,23 @@ describe "redirect_back" do
     class MyController < Application
       before :ensure_authenticated
       def index
-        "IN MY CONTROLLER"
+        "Index"
+      end
+
+      def go_back
+        "Went back"
       end
     end
 
   end
 
   def login
-    request("/login", :method => "put", :params => {:pass_auth => true})
+    visit("/login", :put, :pass_auth => true)
   end
 
   describe "without Merb::Config[:path_prefix]" do
     before(:all) do
       Merb::Config[:path_prefix] = nil
-      @return_to_after_failed_login = '/go_back'
     end
     it_should_behave_like 'every call to redirect_back'
   end
@@ -110,7 +116,6 @@ describe "redirect_back" do
   describe "without Merb::Config[:path_prefix]" do
     before(:all) do
       Merb::Config[:path_prefix] = '/myapp'
-      @return_to_after_failed_login = '/myapp/go_back'
     end
     it_should_behave_like 'every call to redirect_back'
   end

@@ -62,6 +62,7 @@ describe "Merb::AuthenticationHelper" do
         before :ensure_authenticated
 
         def index; "FooController#index" end
+        def show; "show:#{params[:id]}" end
       end
     end
 
@@ -82,26 +83,29 @@ describe "Merb::AuthenticationHelper" do
       end # MyStrategy
 
       Merb::Router.reset!
-      Merb::Router.prepare{ match("/").to(:controller => "foo_controller")}
+      Merb::Router.prepare {
+        match("/").to(:controller => "foo_controller")
+        match("/some/:id").to(:controller => "foo_controller", :action => "show")
+      }
     end
 
     it "should redirect the controller to a Location if the strategy redirects" do
-      controller = get "/", :url => "/some/url"
-      controller.headers["Location"].should == "/some/url"
+      r = mock_request "/", :get, :url => "/some/url"
+      r.headers['Location'].should == "/some/url"
     end
 
     it "should use a 302 redirection by default" do
-      c = get "/", :url => "/some/url"
+      c = mock_request "/", :get, :url => "/some/url"
       c.status.should == 302
     end
 
     it "should use a 301 when marked as permanent" do
-      c = get "/", :url => "/some/url", :permanent => "true"
+      c = mock_request "/", :get, :url => "/some/url", :permanent => "true"
       c.status.should == 301
     end
 
     it "should use a custom status" do
-      c = get "/", :url => "/some/url", :status => 401
+      c = mock_request "/", :get, :url => "/some/url", :status => 401
       c.status.should == 401
     end
 
