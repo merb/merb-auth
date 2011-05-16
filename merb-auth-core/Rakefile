@@ -27,7 +27,7 @@ begin
     gemspec.files       = %w(LICENSE Rakefile README.textile TODO) + Dir['{lib,spec}/**/*']
 
     # Runtime dependencies
-    gemspec.add_dependency 'merb-core', '~> 1.2'
+    gemspec.add_dependency 'merb-core', '~> 1.2.0.pre'
 
     # Development dependencies
     gemspec.add_development_dependency 'rspec', ">= 2.5"

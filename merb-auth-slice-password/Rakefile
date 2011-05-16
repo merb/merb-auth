@@ -31,11 +31,11 @@ begin
     ]
 
     # Runtime dependencies
-    gemspec.add_dependency 'merb-slices',    '~> 1.1'
+    gemspec.add_dependency 'merb-slices',    '~> 1.2.0.pre'
     gemspec.add_dependency 'merb-auth-core', "~> #{Merb::Auth::Core::VERSION}"
     gemspec.add_dependency 'merb-auth-more', "~> #{Merb::Auth::More::VERSION}"
 
-    # Development dependencies              
+    # Development dependencies
     gemspec.add_development_dependency 'rspec', ">= 1.2.9"
 
   end

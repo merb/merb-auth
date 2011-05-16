@@ -38,7 +38,7 @@ begin
     ]
 
     # Runtime dependencies
-    gemspec.add_dependency 'merb-core',                '~> 1.1'
+    gemspec.add_dependency 'merb-core',                '~> 1.2.0.pre'
     gemspec.add_dependency 'merb-auth-core',           "~> #{Merb::Auth::Core::VERSION}"
     gemspec.add_dependency 'merb-auth-more',           "~> #{Merb::Auth::Core::VERSION}"
     gemspec.add_dependency 'merb-auth-slice-password', "~> #{Merb::Auth::Core::VERSION}"
